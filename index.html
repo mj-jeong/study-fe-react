@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <body>
     <div id="root"></div>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
@@ -8,91 +8,77 @@
 
     <script type="text/babel">
       const rootElement = document.getElementById("root");
-      const state = { keyword: "", typing: false, result: "" };
-      const App = () => {
-        function handleChange(event) {
-          setState({ keyword: event.target.value, typing: true });
-        }
+      const todos = [
+        [
+          { id: 1, value: "Wash dishies" },
+          { id: 2, value: "Clean the bed" },
+          { id: 3, value: "Running" },
+          { id: 4, value: "Learning" }
+        ],
+        [
+          { id: 4, value: "Learning" },
+          { id: 1, value: "Wash dishies" },
+          { id: 2, value: "Clean the bed" },
+          { id: 3, value: "Running" }
+        ],
+        [
+          { id: 3, value: "Running" },
+          { id: 1, value: "Wash dishies" },
+          { id: 2, value: "Clean the bed" },
+          { id: 4, value: "Learning" }
+        ],
+        [
+          { id: 2, value: "Clean the bed" },
+          { id: 3, value: "Running" },
+          { id: 4, value: "Learning" },
+          { id: 1, value: "Wash dishies" }
+        ]
+      ];
 
-        function handleClick() {
-          setState({
-            typing: false,
-            result: `We find result of ${state.keyword}`
-          });
-        }
+      const App = () => {
+        const [items, setItems] = React.useState(todos[0]);
+
+        React.useEffect(() => {
+          const interval = setInterval(() => {
+            const randomNum = Math.floor(Math.random() * 3);
+            setItems(todos[randomNum]);
+          }, 1000);
+
+          return () => {
+            clearInterval(interval);
+          };
+        }, []);
+
+        const handleDoneClick = (todo) => {
+          setItems((items) => items.filter((item) => item !== todo));
+        };
+
+        const handleRestoreClick = () => {
+          setItems((items) => [
+            ...items,
+            todos.find((item) => !items.includes(item))
+          ]);
+        };
 
         return (
           <>
-            <input onChange={handleChange} />
-            <button onClick={handleClick}>search</button>
-            <p>
-              {state.typing ? `Looking for ${state.keyword} ...` : state.result}
-            </p>
+            {items.map((todo, index) => (
+              <div key={index}>
+                <button type="button" onClick={() => handleDoneClick(todo)}>
+                  {todo.value}
+                </button>
+              </div>
+            ))}
+            <br />
+            <br />
+            <button type="button" onClick={handleRestoreClick}>
+              Restore
+            </button>
           </>
         );
       };
 
-      function setState(newState) {
-        Object.assign(state, newState);
-        render();
-      }
-
-      function render() {
-        ReactDOM.render(<App />, rootElement);
-      }
-
-      render();
+      ReactDOM.render(<App />, rootElement);
     </script>
-
-    <!-- <script type="text/babel">
-      const rootElement = document.getElementById("root");
-
-      const handleClick = () => {
-        alert("pressed");
-      };
-
-      const handleMouseOut = () => {
-        alert("bye");
-      };
-
-      const element = (
-        <button onClick={handleClick} onMouseOut={handleMouseOut}>
-          Press
-        </button>
-      );
-      ReactDOM.render(element, rootElement);
-    </script> -->
-
-    <!-- <script type="text/babel">
-      const rootElement = document.getElementById("root");
-
-      function random() {
-        const number = Math.floor(Math.random() * (10 - 1) + 1);
-        const element = (
-          <>
-            <button type="button">{number}</button>
-            <button type="button">{number}</button>
-          </>
-        );
-        ReactDOM.render(element, rootElement);
-      }
-
-      setInterval(random, 1000);
-    </script> -->
-
-    <!-- <script>
-      const rootElement = document.getElementById("root");
-
-      function random() {
-        const number = Math.floor(Math.random() * (10 - 1) + 1);
-        const element = `
-           <button type="button">${number}</button>
-        `;
-
-        rootElement.innerHTML = element;
-      }
-
-      setInterval(random, 1000);
-    </script> -->
   </body>
 </html>
