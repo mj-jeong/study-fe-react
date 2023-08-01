@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <body>
     <div id="root"></div>
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
@@ -8,91 +8,74 @@
 
     <script type="text/babel">
       const rootElement = document.getElementById("root");
-      const state = { keyword: "", typing: false, result: "" };
-      const App = () => {
-        function handleChange(event) {
-          setState({ keyword: event.target.value, typing: true });
-        }
 
-        function handleClick() {
-          setState({
-            typing: false,
-            result: `We find result of ${state.keyword}`
-          });
-        }
+      const Id = ({ handleIdChange }) => {
+        return (
+          <>
+            <label htmlFor="id">ID:</label>
+            <input
+              onChange={handleIdChange}
+              type="text"
+              id="id"
+              name="id"
+              defaultValue=""
+            />
+          </>
+        );
+      };
+
+      const PassWord = ({ handlePassWordChange }) => {
+        return (
+          <>
+            <label htmlFor="pw">PW:</label>
+            <input
+              onChange={handlePassWordChange}
+              type="password"
+              id="pw"
+              name="pw"
+              defaultValue=""
+            />
+          </>
+        );
+      };
+
+      const App = () => {
+        const [id, setId] = React.useState("");
+        const [password, setPassWord] = React.useState("");
+
+        const handleIdChange = (e) => {
+          setId(e.target.value);
+          console.log(`id length: ${e.target.value.length}`);
+        };
+
+        const handlePassWordChange = (e) => {
+          setPassWord(e.target.value);
+          console.log(`password length: ${e.target.value.length}`);
+        };
+
+        const handleLoginClick = () => {
+          alert(`id: ${id}, pw:${password}`);
+        };
 
         return (
           <>
-            <input onChange={handleChange} />
-            <button onClick={handleClick}>search</button>
-            <p>
-              {state.typing ? `Looking for ${state.keyword} ...` : state.result}
-            </p>
+            <form>
+              <Id id={id} handleIdChange={handleIdChange} />
+              <br />
+              <PassWord handlePassWordChange={handlePassWordChange} />
+              <button
+                type="submit"
+                disabled={id.length === 0 || password.length === 0}
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+            </form>
           </>
         );
       };
 
-      function setState(newState) {
-        Object.assign(state, newState);
-        render();
-      }
-
-      function render() {
-        ReactDOM.render(<App />, rootElement);
-      }
-
-      render();
+      ReactDOM.render(<App />, rootElement);
     </script>
-
-    <!-- <script type="text/babel">
-      const rootElement = document.getElementById("root");
-
-      const handleClick = () => {
-        alert("pressed");
-      };
-
-      const handleMouseOut = () => {
-        alert("bye");
-      };
-
-      const element = (
-        <button onClick={handleClick} onMouseOut={handleMouseOut}>
-          Press
-        </button>
-      );
-      ReactDOM.render(element, rootElement);
-    </script> -->
-
-    <!-- <script type="text/babel">
-      const rootElement = document.getElementById("root");
-
-      function random() {
-        const number = Math.floor(Math.random() * (10 - 1) + 1);
-        const element = (
-          <>
-            <button type="button">{number}</button>
-            <button type="button">{number}</button>
-          </>
-        );
-        ReactDOM.render(element, rootElement);
-      }
-
-      setInterval(random, 1000);
-    </script> -->
-
-    <!-- <script>
-      const rootElement = document.getElementById("root");
-
-      function random() {
-        const number = Math.floor(Math.random() * (10 - 1) + 1);
-        const element = `
-           <button type="button">${number}</button>
-        `;
-
-        rootElement.innerHTML = element;
-      }
-
-      setInterval(random, 1000);
-    </script> -->
   </body>
 </html>
